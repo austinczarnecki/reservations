@@ -14,8 +14,9 @@ Reservations::Application.routes.draw do
     resources :equipment_objects
   end
 
-  match '/users/import' => 'users#import_page', :via => :get, :as => :csv_import_page
-  match '/users/import' => 'users#import', :via => :post, :as => :csv_import
+  match '/import_users/import' => 'import_users#import_page', :via => :get, :as => :csv_import_page
+  match '/import_users/imported' => 'import_users#import', :via => :post, :as => :csv_imported
+
   resources :users do
     collection do
       get :find
@@ -89,8 +90,6 @@ Reservations::Application.routes.draw do
 
   match 'contact' => 'contact#new', :as => 'contact_us', :via => :get
   match 'contact' => 'contact#create', :as => 'contact_us', :via => :post
-
-  match 'announcements/:id/hide', to: 'announcements#hide', as: 'hide_announcement'
 
   match ':controller(/:action(/:id(.:format)))'
 
