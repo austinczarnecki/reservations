@@ -47,6 +47,7 @@ group :development, :test do
   gem 'ffaker'
   gem 'capistrano'
   gem 'awesome_print'
+  gem 'coveralls', require: false
 end
 
 # Gems used only for assets and not required
