@@ -19,8 +19,6 @@ class CatalogController < ApplicationController
 
   def index
     @reserver_id = session[:cart].reserver_id
-    #push accessories to bottom by removing and reinserting
-    #@equipment_models_by_category[Category.find_by_name("Accessories")] = @equipment_models_by_category.delete(Category.find_by_name("Accessories"))
   end
 
   def add_to_cart
@@ -51,6 +49,11 @@ class CatalogController < ApplicationController
   end
 
   private
+    # this method is called to either add or remove an item from the cart
+    # it takes either :add_item or :remove_item as an action variable,
+    # and adds or removes the equipment_model set from params{} in the before_filter.
+    # Finally, it renders the root page and runs the javascript to update the cart
+    # (or displays the appropriate errors)
     def change_cart(action, item)
       cart.send(action, item)
 

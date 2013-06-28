@@ -37,11 +37,10 @@ gem 'simple_form'
 gem 'cocoon'
 gem 'redcarpet'
 
-
-
 group :development, :test do
   gem "factory_girl_rails"
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'capybara'
   gem 'guard-livereload'
   gem 'yajl-ruby'
@@ -67,7 +66,7 @@ group :development do
   gem 'pry-debugger'
   gem 'pry-stack_explorer'
   gem 'pry-remote'
-  gem 'letter_opener' 
+  gem 'letter_opener'
 end
 
 group :production, :staging do

@@ -1,13 +1,13 @@
 class EquipmentModel < ActiveRecord::Base
   include ApplicationHelper
-  include Searchable
 
+  include Searchable
   searchable_on(:name, :description)
 
   nilify_blanks :only => [:deleted_at]
 
   attr_accessible :name, :category_id, :description, :late_fee, :replacement_fee,
-      :max_per_user, :document_attributes, :accessory_ids, :deleted_at,
+      :max_per_user, :document_attributes, :deleted_at,
       :checkout_procedures_attributes, :checkin_procedures_attributes, :photo,
       :documentation, :max_renewal_times, :max_renewal_length, :renewal_days_before_due,
       :associated_equipment_model_ids, :requirement_ids, :requirements
@@ -49,11 +49,11 @@ class EquipmentModel < ActiveRecord::Base
   validates :late_fee,     :replacement_fee,
                            :numericality => { :greater_than_or_equal_to => 0 }
   validates :max_per_user, :numericality => { :allow_nil => true, \
-                                              :integer_only => true, \
+                                              :only_integer => true, \
                                               :greater_than_or_equal_to => 1 }
   validates :max_renewal_length,
             :max_renewal_times,
-            :renewal_days_before_due,  :numericality => { :allow_nil => true, :integer_only => true, :greater_than_or_equal_to => 0 }
+            :renewal_days_before_due,  :numericality => { :allow_nil => true, :only_integer => true, :greater_than_or_equal_to => 0 }
 
   validate :not_associated_with_self
 
@@ -136,6 +136,7 @@ class EquipmentModel < ActiveRecord::Base
     renewal_days_before_due || category.maximum_renewal_days_before_due
   end
 
+  # TODO: This appears to be dead code, verify and delete
   def document_attributes=(document_attributes)
     document_attributes.each do |attributes|
       documents.build(attributes)
@@ -155,7 +156,7 @@ class EquipmentModel < ActiveRecord::Base
     reserver = User.find(reserver_id)
     self.requirements.each do |em_req|
       unless reserver.requirements.include?(em_req)
-         return true
+        return true
       end
     end
     return false
@@ -163,7 +164,7 @@ class EquipmentModel < ActiveRecord::Base
 
 
   # Returns the number of reserved objects for a particular model,
-  # as long as they have not been checked out
+  # as long as they have not been checked in
   def number_reserved_on_date(date)
     Reservation.reserved_on_date(date).not_returned.for_eq_model(self).size
   end
@@ -177,7 +178,7 @@ class EquipmentModel < ActiveRecord::Base
 
   def available_count(date)
     # get the total number of objects of this kind
-    # then subtract the total quantity currently reserved, and overdue
+    # then subtract the total quantity currently reserved, checked-out, and overdue
     total = equipment_objects.active.count
     (total - number_reserved_on_date(date)) - number_overdue
   end
